@@ -1,17 +1,21 @@
+#### Base image
+#### Reference: https://github.com/diana-hep/madminer/blob/master/Dockerfile
 FROM madminertool/docker-madminer:latest
-#FROM python:3.6
 
-RUN apt-get update && apt-get -y install vim
 
-COPY requirements.txt requirements.txt
-
-# pip install 
-RUN apt-get -y install python3-pip && pip install --no-cache -r requirements.txt && pip3 install --no-cache -r requirements.txt
-
+#### Set working directory
 WORKDIR /madminer
 
-COPY code/ ./code
+#### Copy files
+COPY code ./code
+COPY scripts ./scripts
+COPY requirements.txt .
 
-RUN pip install madminer
 
+# Install Python2 dependencies
+RUN python2 -m pip install --upgrade pip && \
+    python2 -m pip install --no-cache-dir --requirement requirements.txt
 
+# Install Python3 dependencies
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --no-cache-dir --requirement requirements.txt
